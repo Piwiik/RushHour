@@ -69,3 +69,12 @@ class Vehicle():
         :rtype: str
         """
         return self.__name
+
+    def __eq__(self,other):
+        """
+
+        """
+        try :
+            return self.__name==other.__name and self.__orientation==other.__orientation
+        except AttributeError :
+            return False

@@ -107,13 +107,21 @@ class Board():
             raise NoVehicleError()
         elif self.__cells[position].get_orientation() :
             name = self.__cells[position].get_name()
-            while position[0]!=0 and self.__cells[(position[0]-1 , position[1])].get_name()==name :
+            is_same = self.__cells[(position[0]-1 , position[1])].get_name()==name
+            while position[0]!=0 and is_name :
                 position = (position[0]-1 , position[1])
+                is_same = self.__cells[(position[0]-1 , position[1])].get_name()==name
+
             return position
         else :
             name = self.__cells[position].get_name()
-            while position[1]!=0 and self.__cells[(position[0] , position[1]-1)].get_name()==name :
+            try :
+                is_same = self.__cells[(position[0] , position[1]-1)].get_name()==name
+            except AttributeError :
+                
+            while position[1]!=0 and is_same :
                 position = (position[0] , position[1]-1)
+                is_same=self.__cells[(position[0] , position[1]-1)].get_name()==name
             return position
 
     def push_vehicle(self,direction,position):
@@ -129,7 +137,6 @@ class Board():
         :UC: position is a couple of integers between 0 and 5
 
         """
-        position = get_starting_cell(position)
         size = self.__cells[position].get_size()
         if direction :
             if self.__cells[position].get_orientation():
@@ -173,8 +180,72 @@ class Board():
                 except KeyError :
                     raise PositionError()
 
+    def get_possible_moves(self):
+        """
+        Computes the possible moves of a vehicle over one cell in the current board self
+        :param self: a board
+        :type self: Board
+        :returns: a list of each move you can make in the form : (position,direction)
+            where position (tuple) is a couple of integers which point to the starting cell of the vehicle
+            and direction (bool) is the direction in which the vehicle can go, depending on its orientation
+        :rtype: list
+        :UC: none
+
+        """
+        res = list()
+        starting_cells = []
+        for i in range(6):
+            for j in range(6):
+                vehicle = self.__cells[(i,j)]
+                if vehicle != None :
+                    sc = self.get_starting_cell((i,j))
+                    if sc not in starting_cells :
+                        starting_cells.append(sc)
+                        if vehicle.get_orientation():
+                            #vehicle is vertical
+                            try:
+                                if self.__cells[(i-1,j)]==None :
+                                    #can move downwards
+                                    res.append(((i-1,j),False))
+                            except KeyError :
+                                pass
+                            try:
+                                if self.__cells[(i+1,j)]==None :
+                                    #can move upwards
+                                    res.append(((i+1,j),True))
+                            except KeyError :
+                                pass
+                        else:
+                            #vehicle is horizontal
+                            try:
+                                if self.__cells[(i,j-1)]==None :
+                                    #can move to the left
+                                    res.append(((i,j-1),False))
+                            except KeyError :
+                                pass
+                            try:
+                                if self.__cells[(i,j+1)]==None :
+                                    #can move to the right
+                                    res.append(((i,j+1),True))
+                            except KeyError :
+                                pass
+        return res
 
 
+
+
+
+
+
+    def __eq__(self,other):
+        is_equal , i , j = True , 0 , 0
+        while i<6 and is_equal :
+            while j<6 and is_equal :
+                is_equal = self.__cells[(i,j)]==other.__cells[(i,j)]
+                j+=1
+            j=0
+            i+=1
+        return is_equal
 
     def __repr__(self):
         """
