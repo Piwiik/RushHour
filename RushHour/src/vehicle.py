@@ -39,7 +39,7 @@ class Vehicle():
         :rtype: Vehicle
         :UC: name is a letter between A and K or between O and R or Z or X
         """
-        if type(orientation)==bool and type(name)==str and len(name)==1 and name in "ABCDEFJKXZOPQR":
+        if type(orientation)==bool and type(name)==str and len(name)==1 and name in "ABCDEFGHIJKXZOPQR":
             self.__orientation = orientation
             self.__name = name
             if name in "OPQR" :
@@ -78,3 +78,10 @@ class Vehicle():
             return self.__name==other.__name and self.__orientation==other.__orientation
         except AttributeError :
             return False
+
+    def __str__(self):
+        if self.__orientation :
+            ori = "vertically"
+        else :
+            ori = "horizontally"
+        return "Vehicle {} of size {} and positioned {}.".format(self.__name, self.__size, ori)

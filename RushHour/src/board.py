@@ -37,13 +37,10 @@ class NoVehicleError(Exception):
     def __init__(self):
         self.message = "No vehicle is present"
 
-'''def is_accurate(description):
-    """
-    Used only once, when the game is first described by the user, to test if the description is of the right form or not
-    """
-    if type(description)==list and len(description)!=0 :
-        for vehicle in description :
-            try'''
+class NoRedCarError(Exception):
+    def __init__(self):
+        self.__message = "No vehicle can act as a red car"
+
 
 class Board():
     def add_vehicle(self, vehicle, position, count=None):
@@ -106,44 +103,52 @@ class Board():
         if self.__cells[position]==None :
             raise NoVehicleError()
         elif self.__cells[position].get_orientation() :
+            #vehicle is vertical
             name = self.__cells[position].get_name()
-            is_same = self.__cells[(position[0]-1 , position[1])].get_name()==name
-            while position[0]!=0 and is_name :
-                position = (position[0]-1 , position[1])
+            try :
                 is_same = self.__cells[(position[0]-1 , position[1])].get_name()==name
-
-            return position
+                while position[0]!=0 and is_same :
+                    position = (position[0]-1 , position[1])
+                    is_same = self.__cells[(position[0]-1 , position[1])].get_name()==name
+            except AttributeError :
+                pass
+            except KeyError :
+                pass
         else :
+            #vehicle is horizontal
             name = self.__cells[position].get_name()
             try :
                 is_same = self.__cells[(position[0] , position[1]-1)].get_name()==name
+                while position[1]!=0 and is_same :
+                    position = (position[0] , position[1]-1)
+                    is_same=self.__cells[(position[0] , position[1]-1)].get_name()==name
             except AttributeError :
-                
-            while position[1]!=0 and is_same :
-                position = (position[0] , position[1]-1)
-                is_same=self.__cells[(position[0] , position[1]-1)].get_name()==name
-            return position
+                pass
+            except KeyError :
+                pass
+        return position
 
-    def push_vehicle(self,direction,position):
+    def push_vehicle(self,position,direction):
         """
         Pushes the vehicle laying at the position of one cell in the direction direction
         If there is no vehicle there, raises NoVehicleError
 
+        :param position: coordinates of the cell on which lies the vehicle you want to move
+        :type position: tuple
         :param direction: If the vehicle is horizontal, True means right and False means left
             If the vehicle is vertical, True means down and False means up
         :type direction: bool
-        :param position: coordinates of the cell on which lies the vehicle you want to move
-        :type position: tuple
         :UC: position is a couple of integers between 0 and 5
 
         """
-        size = self.__cells[position].get_size()
+        vehicle = self.__cells[position]
+        size = vehicle.get_size()
         if direction :
-            if self.__cells[position].get_orientation():
+            if vehicle.get_orientation():
                 #vehicle is moving down
                 try :
                     if self.__cells[(position[0]+size , position[1])] == None :
-                        self.__cells[(position[0]+size , position[1])] = self.__cells[position]
+                        self.__cells[(position[0]+size , position[1])] = vehicle
                     else :
                         raise CollisionError()
                 except KeyError :
@@ -152,31 +157,31 @@ class Board():
                 #vehicle is moving to the right
                 try :
                     if self.__cells[(position[0] , position[1]+size)] == None :
-                        self.__cells[(position[0] , position[1]+size)] = self.__cells[position]
+                        self.__cells[(position[0] , position[1]+size)] = vehicle
                     else :
                         raise CollisionError()
                 except KeyError :
                     raise PositionError()
-            self.__cells[position]=None
+            vehicle=None
         else :
-            if self.__cells[position].get_orientation():
+            if vehicle.get_orientation():
                 #vehicle is moving up
                 try :
                     if self.__cells[(position[0]-1 , position[1])] == None :
-                        self.__cells[(position[0]-1 , position[1])] = self.__cells[position]
+                        self.__cells[(position[0]-1 , position[1])] = vehicle
                     else :
                         raise CollisionError()
-                    self.__cells[(position[0]+size-1 , position[1])]
+                    self.__cells[(position[0]+size-1 , position[1])] = vehicle
                 except KeyError :
                     raise PositionError()
             else :
                 #vehicle is moving to the left
                 try :
                     if self.__cells[(position[0] , position[1]-1)] == None :
-                        self.__cells[(position[0] , position[1]-1)] = self.__cells[position]
+                        self.__cells[(position[0] , position[1]-1)] = vehicle
                     else :
                         raise CollisionError()
-                    self.__cells[(position[0] , position[1])+size-1]
+                    self.__cells[(position[0] , position[1]+size-1)]
                 except KeyError :
                     raise PositionError()
 
@@ -193,47 +198,90 @@ class Board():
 
         """
         res = list()
-        starting_cells = []
+        starting_cells = list()
         for i in range(6):
             for j in range(6):
                 vehicle = self.__cells[(i,j)]
+                #print("testing",vehicle)
                 if vehicle != None :
                     sc = self.get_starting_cell((i,j))
+                    #print("found starting cell",sc)
                     if sc not in starting_cells :
+                        #print("new starting cell")
                         starting_cells.append(sc)
                         if vehicle.get_orientation():
-                            #vehicle is vertical
+                            #print("vehicle is vertical")
                             try:
                                 if self.__cells[(i-1,j)]==None :
-                                    #can move downwards
-                                    res.append(((i-1,j),False))
+                                    #print("can move downwards")
+                                    res.append((sc,False))
                             except KeyError :
                                 pass
                             try:
-                                if self.__cells[(i+1,j)]==None :
-                                    #can move upwards
-                                    res.append(((i+1,j),True))
+                                if self.__cells[(i+vehicle.get_size(),j)]==None :
+                                    #print("can move upwards")
+                                    res.append((sc,True))
                             except KeyError :
                                 pass
                         else:
-                            #vehicle is horizontal
+                            #print("vehicle is horizontal")
                             try:
                                 if self.__cells[(i,j-1)]==None :
-                                    #can move to the left
-                                    res.append(((i,j-1),False))
+                                    #print("can move to the left")
+                                    res.append((sc,False))
                             except KeyError :
                                 pass
                             try:
-                                if self.__cells[(i,j+1)]==None :
-                                    #can move to the right
-                                    res.append(((i,j+1),True))
+                                if self.__cells[(i,j+vehicle.get_size())]==None :
+                                    #print("can move to the right")
+                                    res.append((sc,True))
                             except KeyError :
                                 pass
         return res
 
+    def get_red_car(self):
+        """
+        returns the name of the vehicle that will be considered as the "red car"
+        which means that this vehicle will be the one the player has to move to the cell (2,5)
+        the "red car" is the rightmost horizontal vehicle on the third line of the board
+        """
+        name = None
+        for i in range(5) :
+            vehicle = self.__cells[(2,i)]
+            if vehicle!=None and not vehicle.get_orientation() :
+                name = vehicle.get_name()
+        if name == None :
+            raise NoRedCarError()
+        else :
+            return name
+
+    def life_uh_finds_a_way(self, boards=dict()):
+        """
+        Jeff Eclosion d'Or
+        :param boards: (optional) shouldn't be used by user
+        :type board: dict
+        """
+        print(len(boards))
+        if not self in boards :
+            boards[self] = self.get_possible_moves()
+            moves = boards[self]
+            if moves != list() :
+                position , orientation = moves.pop()
+                self.push_vehicle(position, orientation)
+                self.life_uh_finds_a_way(boards)
+
+    def welcome_to_jurassic_park(self):
+        """
+        Tatataaa
+        """
+        redcar = self.get_red_car()
+        while self.__cells[(2,5)] == None or  self.__cells[(2,5)].get_name()!=redcar :
+            self.life_uh_finds_a_way()
 
 
 
+    def __hash__(self):
+        return hash(str(self))
 
 
 
@@ -251,7 +299,7 @@ class Board():
         """
 
         """
-        print("#############")
+        print("#0#1#2#3#4#5#")
         for x in range(6) :
             for y in range(6) :
                 if self.__cells[(x,y)] == None:
@@ -260,12 +308,12 @@ class Board():
                     name = self.__cells[(x,y)].get_name()
                 print("#"+name, end="")
             print("#")
-        print("#############")
+        print("#0#1#2#3#4#5#")
 
     def __str__(self):
         """
         """
-        res = "#############\n"
+        res = "#0#1#2#3#4#5#\n"
         for x in range(6):
             for y in range(6):
                 if self.__cells[(x,y)] == None:
@@ -273,4 +321,4 @@ class Board():
                 else :
                     res += "#"+self.__cells[(x,y)].get_name()
             res += "#\n"
-        return res+"#############"
+        return res+"#0#1#2#3#4#5#"
