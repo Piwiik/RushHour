@@ -191,11 +191,10 @@ class Board():
         :param self: a board
         :type self: Board
         :returns: a list of each move you can make in the form : (position,direction)
-            where position (tuple) is a couple of integers which point to the starting cell of the vehicle
-            and direction (bool) is the direction in which the vehicle can go, depending on its orientation
+        where position (tuple) is a couple of integers which point to the starting cell of the vehicle
+        and direction (bool) is the direction in which the vehicle can go, depending on its orientation
         :rtype: list
         :UC: none
-
         """
         res = list()
         starting_cells = list()
