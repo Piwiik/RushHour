@@ -255,6 +255,8 @@ class Board():
         else :
             return name
 
+
+#Tests de résolution du casse-tête, non concluant/non terminé
     def life_uh_finds_a_way(self, boards=dict()):
         """
         Jeff Eclosion d'Or
@@ -277,7 +279,7 @@ class Board():
         redcar = self.get_red_car()
         while self.__cells[(2,5)] == None or  self.__cells[(2,5)].get_name()!=redcar :
             self.life_uh_finds_a_way()
-
+####
 
 
     def __hash__(self):

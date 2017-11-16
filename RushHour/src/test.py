@@ -1,3 +1,5 @@
+#Fichier de test, à ignorer
+
 from board import *
 """
 
