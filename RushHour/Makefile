@@ -24,5 +24,5 @@ archive: clean
 
 author:
 	sed -i -e 's/^project =.*/project = "$(PROJECT)"/g' conf.py
-	sed -i -e 's/^copyright =.*/copyright = "2016, $(AUTHOR), Univ. Lille1"/g' conf.py
+	sed -i -e 's/^copyright =.*/copyright = "2017, $(AUTHOR), Univ. Lille1"/g' conf.py
 	sed -i -e 's/^author =.*/author = "$(AUTHOR)"/g' conf.py
