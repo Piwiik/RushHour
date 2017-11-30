@@ -75,7 +75,7 @@ class Board():
         """
         Creates a board for a rush hour game of height and width 6 tiles
 
-        :param vehicles: a list of tuples (name,size,orientation,position) where
+        :param vehicles: a list of tuples (orientation,name,position) where
             - orientation (bool) is the orientation of the vehicle (True for vertical, False for horizontal)
             - name (str) is the name of the vehicle (which is a name in the classic game)
             - position (tuple) is a tuple (x,y) of the position of the upmost and leftmost tile on which the vehicle rests
@@ -139,16 +139,16 @@ class Board():
             If the vehicle is vertical, True means down and False means up
         :type direction: bool
         :UC: position is a couple of integers between 0 and 5
+             position is the starting cell of a vehicle
 
         """
-        vehicle = self.__cells[position]
-        size = vehicle.get_size()
+        size = self.__cells[position].get_size()
         if direction :
-            if vehicle.get_orientation():
+            if self.__cells[position].get_orientation():
                 #vehicle is moving down
                 try :
                     if self.__cells[(position[0]+size , position[1])] == None :
-                        self.__cells[(position[0]+size , position[1])] = vehicle
+                        self.__cells[(position[0]+size , position[1])] = self.__cells[position]
                     else :
                         raise CollisionError()
                 except KeyError :
@@ -157,33 +157,38 @@ class Board():
                 #vehicle is moving to the right
                 try :
                     if self.__cells[(position[0] , position[1]+size)] == None :
-                        self.__cells[(position[0] , position[1]+size)] = vehicle
+                        self.__cells[(position[0] , position[1]+size)] = self.__cells[position]
                     else :
                         raise CollisionError()
                 except KeyError :
                     raise PositionError()
-            vehicle=None
+            self.__cells[position]=None
         else :
-            if vehicle.get_orientation():
+            if self.__cells[position].get_orientation():
                 #vehicle is moving up
                 try :
                     if self.__cells[(position[0]-1 , position[1])] == None :
-                        self.__cells[(position[0]-1 , position[1])] = vehicle
+                        self.__cells[(position[0]-1 , position[1])] = self.__cells[position]
                     else :
                         raise CollisionError()
-                    self.__cells[(position[0]+size-1 , position[1])] = vehicle
+                    self.__cells[(position[0]+size-1 , position[1])] = self.__cells[position]
                 except KeyError :
                     raise PositionError()
             else :
                 #vehicle is moving to the left
                 try :
                     if self.__cells[(position[0] , position[1]-1)] == None :
-                        self.__cells[(position[0] , position[1]-1)] = vehicle
+                        self.__cells[(position[0] , position[1]-1)] = self.__cells[position]
                     else :
                         raise CollisionError()
-                    self.__cells[(position[0] , position[1]+size-1)]
+                    self.__cells[(position[0] , position[1]+size-1)] = self.__cells[position]
                 except KeyError :
                     raise PositionError()
+
+    def clone_and_push(self,position,direction):
+        clone = self.copy()
+        clone.push_vehicle(position,direction)
+        return clone
 
     def get_possible_moves(self):
         """
@@ -254,8 +259,17 @@ class Board():
         else :
             return name
 
+    def copy(self):
+        """
+        Copies self as a new board
+        """
+        clone = Board(list())
+        for cell in self.__cells :
+            clone.__cells[cell] = self.__cells[cell]
+        return clone
 
-#Tests de résolution du casse-tête, non concluant/non terminé
+
+    #Tests de résolution du casse-tête, non concluant/non terminé
     def life_uh_finds_a_way(self, boards=dict()):
         """
         Jeff Eclosion d'Or
@@ -278,7 +292,8 @@ class Board():
         redcar = self.get_red_car()
         while self.__cells[(2,5)] == None or  self.__cells[(2,5)].get_name()!=redcar :
             self.life_uh_finds_a_way()
-####
+
+    ####
 
 
     def __hash__(self):

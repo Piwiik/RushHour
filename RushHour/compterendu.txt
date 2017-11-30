@@ -26,3 +26,8 @@ Fichier board.py :
       méthodes en développement : life_uh_finds_a_way et welcome_to_jurassic_park
 Fichier test.py : fichier de test, à ignorer
 Objectif pour la semaine prochaine : avancer dans la résolution du casse-tête
+Semaines 2 et 3 : Explorations de pistes pour la résolution du problème, d'abord avec des boards mutables puis non-mutables
+    méthodes dans la classe board :
+        copy (à l'origine codée d'une autre manière, mais suite à des tests, celle-ci a été jugée plus rapide)
+        clone_and_push
+        résolution d'erreurs dans push_vehicle

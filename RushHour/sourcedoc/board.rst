@@ -17,7 +17,11 @@ Methods
 
 .. automethod:: board.Board.get_starting_cell
 
+.. automethod:: board.Board.copy
+
 .. automethod:: board.Board.push_vehicle
+
+.. automethod:: board.Board.clone_and_push
 
 .. automethod:: board.Board.get_possible_moves
 
