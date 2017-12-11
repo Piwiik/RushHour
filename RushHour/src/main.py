@@ -73,7 +73,7 @@ def get_input_initialization():
 
 def find_solution(board):
     solution = board.Noirecommelechateauouflotteletendardnotredrapeau()
-    moves = solution.split("|")
+    moves = solution.split("|")[:-1]
     print("Found a solution, press enter to view the next step")
     ah = input()
     for move in moves :

@@ -248,12 +248,11 @@ class Board():
         """
         returns starting cell of the vehicle with the name name
         """
-        i,j = 0,0
-        while i<5 and (self.cells[i,j]==None or self.cells[i,j].get_name()!=name):
-            while j<5 and (self.cells[i,j]==None or self.cells[i,j].get_name()!=name):
-                j+=1
-            i+=1
-        return (i,j)
+        for i in range(6) :
+            for j in range(6) :
+                if self.cells[i,j]!=None and self.cells[i,j].get_name()==name :
+                    return (i,j)
+        raise NoSolutionError("Couldn't find a vehicule with the name "+name)
 
     def get_red_car(self):
         """
