@@ -21,6 +21,7 @@ This module uses from :mod:`board` :
 class Board
 
 """
+from board import *
 from tkinter import *
 from pickle import *
 
