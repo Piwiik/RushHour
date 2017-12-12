@@ -22,6 +22,8 @@ class Board
 
 """
 from board import *
+from pickle import *
+import graphical
 
 def get_input_initialization():
     """
@@ -84,9 +86,19 @@ def find_solution(board):
 
 
 def main():
-    find_solution(get_input_initialization())
-
-
+    i=input("(T)extual or (G)raphical board solver? ")
+    while len(i)!=1 or i.upper() not in "TG":
+        print("Please enter a valid input.")
+        i=input("(T)extual or (G)raphical board solver? ")
+    if i.upper()=="T":
+        find_solution(get_input_initialization())
+    elif i.upper()=="G":
+        print("Let's start by creating the board!")
+        my_board=get_input_initialization()
+        with open("my_board","wb") as f:
+            p=Pickler(f)
+            p.dump(my_board)
+        graphical.main()
 
 if __name__ == "__main__":
     main()
