@@ -23,7 +23,6 @@ class Board
 """
 from board import *
 from pickle import *
-import graphical
 
 def get_input_initialization():
     """
@@ -98,6 +97,7 @@ def main():
         with open("my_board","wb") as f:
             p=Pickler(f)
             p.dump(my_board)
+        import graphical
         graphical.main()
 
 if __name__ == "__main__":
