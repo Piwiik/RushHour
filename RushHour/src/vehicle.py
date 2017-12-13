@@ -7,18 +7,51 @@
 """
 :mod:`vehicle` module
 
-:author: Uro Pierrick, Ferdjani Luqman, Devaux Manon
+:author: `Uro Pierrick, Ferdjani Luqman, Devaux Manon`
 
 :date: 2017, october
+:last revision: 2017, november
 
 A module for vehicle representations in a Rush Hour game
 
-This module provides :
+:Provides:
 
-class Vehicle
+* class Vehicle
 
+and methods
 
+* `get_size`
+* `get_orientation`
+* `get_name`
+* `__eq__`
+* `__str__`
+
+:Examples:
+
+>>> vehicle1 = Vehicle(True, "A")
+>>> vehicle2 = Vehicle(False, "O")
+>>> vehicle1.get_size()
+2
+>>> vehicle2.get_size()
+3
+>>> vehicle1.get_orientation()
+True
+>>> vehicle2.get_orientation()
+False
+>>> vehicle1.get_name()
+'A'
+>>> vehicle2.get_name()
+'O'
+>>> vehicle1 == vehicle2
+False
+>>> vehicle1 == vehicle1
+True
+>>> vehicle1 == 1
+False
+>>> print(vehicle1)
+Vehicle A of size 2 and positioned vertically.
 """
+
 class VehicleError(Exception):
     pass
 
@@ -38,9 +71,6 @@ class Vehicle():
         :returns: a Vehicle object corresponding to the parameters
         :rtype: Vehicle
         :UC: name is a letter between A and K or between O and R or Z or X
-        :Example:
-
-
         """
         if type(orientation)==bool and type(name)==str and len(name)==1 and name in "ABCDEFGHIJKXZOPQR":
             self.__orientation = orientation
@@ -61,7 +91,9 @@ class Vehicle():
         :UC: None
         :Example:
 
-
+        >>> vehicle1 = Vehicle(True, "A")
+        >>> vehicle1.get_size()
+        2
         """
         return self.__size
 
@@ -74,7 +106,9 @@ class Vehicle():
         :UC: None
         :Example:
 
-
+        >>> vehicle1 = Vehicle(True, "A")
+        >>> vehicle1.get_orientation()
+        True
         """
         return self.__orientation
 
@@ -87,7 +121,9 @@ class Vehicle():
         :UC: None
         :Example:
 
-
+        >>> vehicle1 = Vehicle(True, "A")
+        >>> vehicle1.get_name()
+        'A'
         """
         return self.__name
 
@@ -102,7 +138,10 @@ class Vehicle():
         :UC: None
         :Example:
 
-
+        >>> vehicle1 = Vehicle(True, "A")
+        >>> vehicle2 = Vehicle(False, "O")
+        >>> vehicle1 == vehicle1
+        True
         """
         try :
             return self.__name==other.__name and self.__orientation==other.__orientation
@@ -118,10 +157,16 @@ class Vehicle():
         :UC: None
         :Example:
 
-
+        >>> vehicle1 = Vehicle(True, "A")
+        >>> print(vehicle1)
+        Vehicle A of size 2 and positioned vertically.
         """
         if self.__orientation :
             ori = "vertically"
         else :
             ori = "horizontally"
         return "Vehicle {} of size {} and positioned {}.".format(self.__name, self.__size, ori)
+
+if __name__=="__main__":
+    import doctest
+    doctest.testmod()
