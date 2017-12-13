@@ -38,6 +38,9 @@ class Vehicle():
         :returns: a Vehicle object corresponding to the parameters
         :rtype: Vehicle
         :UC: name is a letter between A and K or between O and R or Z or X
+        :Example:
+
+
         """
         if type(orientation)==bool and type(name)==str and len(name)==1 and name in "ABCDEFGHIJKXZOPQR":
             self.__orientation = orientation
@@ -51,27 +54,54 @@ class Vehicle():
 
     def get_size(self):
         """
-        :returns: the size of the vehicle
+        return the size of the vehicle
+
+        :returns: the size of self
         :rtype: int
+        :UC: None
+        :Example:
+
+
         """
         return self.__size
 
     def get_orientation(self):
         """
-        :returns: True if the vehicle is vertical, False otherwise
+        return True if the vehicle is vertical, False otherwise
+
+        :returns: True if self is vertical, False otherwise
         :rtype: bool
+        :UC: None
+        :Example:
+
+
         """
         return self.__orientation
 
     def get_name(self):
         """
-        :returns: the name of the vehicle
+        return the name of the vehicle
+
+        :returns: the name of self
         :rtype: str
+        :UC: None
+        :Example:
+
+
         """
         return self.__name
 
     def __eq__(self,other):
         """
+        return True if the two objects are the same vehicle (if their name and orientation are the same), False otherwise
+
+        :param other: the object tested
+        :type other: any
+        :returns: True if self and other are the same object with the same attributes
+        :rtype: bool
+        :UC: None
+        :Example:
+
 
         """
         try :
@@ -80,6 +110,16 @@ class Vehicle():
             return False
 
     def __str__(self):
+        """
+        return a string representation of the vehicle
+
+        :returns: a string presenting the caracteristics of self
+        :rtype: str
+        :UC: None
+        :Example:
+
+
+        """
         if self.__orientation :
             ori = "vertically"
         else :

@@ -298,17 +298,6 @@ class Board():
     def __repr__(self):
         """
 
-
-        print("#0#1#2#3#4#5#")
-        for x in range(6) :
-            for y in range(6) :
-                if self.cells[(x,y)] == None:
-                    name = " "
-                else :
-                    name = self.cells[(x,y)].get_name()
-                print("#"+name, end="")
-            print("#")
-        print("#0#1#2#3#4#5#")
         """
         res = "#0#1#2#3#4#5#\n"
         for x in range(6):
@@ -317,20 +306,9 @@ class Board():
                     res += "# "
                 else :
                     res += "#"+self.cells[(x,y)].get_name()
-            res += "#\n"
-        return res+"#0#1#2#3#4#5#"
-
-    def __str__(self):
-        """
-        """
-        res = "#0#1#2#3#4#5#\n"
-        for x in range(6):
-            for y in range(6):
-                if self.cells[(x,y)] == None:
-                    res += "# "
-                else :
-                    res += "#"+self.cells[(x,y)].get_name()
-            res += "#\n"
+            if x!=2 :
+                res+="#"
+            res += "\n"
         return res+"#0#1#2#3#4#5#"
 
     def Noirecommelechateauouflotteletendardnotredrapeau(self):
