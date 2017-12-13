@@ -45,6 +45,10 @@ class NoSolutionError(Exception):
     def __init__(self,message):
         self.__message = message
 
+class IllegalMoveError(Exception):
+    def init(self,message):
+        self.__message = "This vehicle cannot be moved in this manner"
+
 class Board():
     def add_vehicle(self, vehicle, position, count=None):
         """
