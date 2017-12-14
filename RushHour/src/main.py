@@ -296,13 +296,13 @@ def textual_game():
             tmp = board.copy()
             try:
                 board = input_move(tmp,move.upper(),vehicle_name.upper())
+                print(board)
             except CollisionError:
                 print("The move makes the vehicle collide with another one, choose another vehicle or/and move")
             except PositionError:
                 print("The move puts a vehicle outside of the board's bounds, choose another vehicle or/and move")
             except IllegalMoveError:
                 print("The move is impossible to do given the vehicle's orientation, choose another vehicle or/and move")
-        print(board)
     if is_game_ended(board,redcar):
         print("Congratulations, you won !")
 
