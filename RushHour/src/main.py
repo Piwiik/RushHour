@@ -245,7 +245,18 @@ def textual_game():
             if save.upper()=="Y":
                 save_game(board)
             elif save.upper()=="S":
-                find_solution(board)
+                i=input("(T)extual or (G)raphical board solver? ")
+                while len(i)!=1 or i.upper() not in "TG":
+                    print("Please enter a valid input.")
+                    i=input("(T)extual or (G)raphical board solver? ")
+                if i.upper()=="T":
+                    find_solution(board)
+                elif i.upper()=="G":
+                    with open("my_board","wb") as f:
+                        p=Pickler(f)
+                        p.dump(board)
+                    import graphical
+                    graphical.main()
         else:
             move = input("Choose in which direction you want the car to move (L,D,U,R) ")
             while len(move)!=1 or move.upper() not in "LDUR":
