@@ -161,12 +161,12 @@ def find_car(board,name):
         i+=1
     return found_car
 
-def save_game(board):
+def save_game(board, file_i):
     """
     Allows to save a board in a binary file that can be later read and loaded
-    to resume game
+    to resume game. Three save files are available each of different file_i index
     """
-    ob_file = open("rushhour", "wb")
+    ob_file = open("rushhour"+file_i, "wb")
     p = Pickler(ob_file)
     p.dump(board)
     ob_file.close()
@@ -181,11 +181,23 @@ def load_board():
         print("Could not understand your input, please try again.")
         load = input("Would you rather (L)oad a file from your previous game, (C)reate your very own board, or (S)elect a board from the library ? (L/C/S) ").upper()
     if load=="L":
+        for index in "123":
+            try:
+                ob_file = open("rushhour"+index, "rb")
+                p = Unpickler(ob_file)
+                print("\n This is save file "+index+" :\n")
+                print(p.load())
+            except IOError:
+                print("\n No save file "+index+"\n")
+        file_i = input("Choose between save file (1), (2) and (3) ")
+        while len(file_i)!=1 or file_i not in "123":
+            print("Could not understand your input, please try again.")
+            file_i = input("Choose between save files (1), (2) and (3) ")
         try:
-            ob_file = open("rushhour", "rb")
+            ob_file = open("rushhour"+file_i, "rb")
             p = Unpickler(ob_file)
         except IOError:
-            choice = input("There is no save file, you may (C)reate your own game board or (S)elect a board from the library ")
+            choice = input("The save file you selected is empty, you may (C)reate your own game board or (S)elect a board from the library instead ")
             while len(choice)!=1 or choice.upper() not in "CS":
                 print("Could not understand your input, please try again")
                 choice = input("There is no save file, you may (C)reate your own game board or (S)elect a board from the library ")
@@ -249,7 +261,20 @@ def textual_game():
                 print("You may answer Y for yes, N for no or S if you'd like to see a solution, you may answer in lowercase if you wish")
                 save = input("Would you like to save your current progression ? (Y/N) Or would you like to see a (S)olution ")
             if save.upper()=="Y":
-                save_game(board)
+                print("Here are your save files")
+                for index in "123":
+                    try:
+                        ob_file = open("rushhour"+index, "rb")
+                        p = Unpickler(ob_file)
+                        print("\n This is save file "+index+" :\n")
+                        print(p.load())
+                    except IOError:
+                        print("\n No save file "+index+"\n")
+                file_i = input("Choose between save files (1), (2) and (3) ")
+                while len(file_i)!=1 or file_i not in "123":
+                    print("Could not understand your input, please try again.")
+                    file_i = input("Choose between save files (1), (2) and (3) ")
+                save_game(board,file_i)
             elif save.upper()=="S":
                 i=input("(T)extual or (G)raphical board solver? ")
                 while len(i)!=1 or i.upper() not in "TG":
@@ -280,6 +305,7 @@ def textual_game():
         print(board)
     if is_game_ended(board,redcar):
         print("Congratulations, you won !")
+
 
 ### MAIN FUNCTION ###
 
