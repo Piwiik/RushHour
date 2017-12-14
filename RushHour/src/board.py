@@ -352,3 +352,26 @@ def get_new_boards(active_boards,farmed_boards):
                 new_boards.add((moved_board[0],board[1]+moved_board[1]))
                 farmed_boards.add(moved_board[0])
     return new_boards
+
+
+def move(board,moves):
+    """
+    Returns tuple containing a copy of board (a Board object) where the move indicated by the last tuple of moves has been done, and a letter indicating which move has been done
+    L : Left ; R : Right ; U : Up ; D : Down
+    Side effect : removes the tuple used from moves
+    If moves is empty, raises assertion error
+    """
+    assert len(moves)!=0
+    move = moves.pop()
+    vehicle = board.cells[move[0]]
+    if move[1] :
+        if vehicle.get_orientation() :
+            l = "D"
+        else :
+            l="R"
+    else :
+        if vehicle.get_orientation() :
+            l = "U"
+        else :
+            l="L"
+    return (board.clone_and_push(move[0],move[1]),l+vehicle.get_name()+"|")
