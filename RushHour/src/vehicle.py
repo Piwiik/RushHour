@@ -10,7 +10,7 @@
 :author: `Uro Pierrick, Ferdjani Luqman, Devaux Manon`
 
 :date: 2017, october
-:last revision: 2017, november
+:last revision: 2017, december
 
 A module for vehicle representations in a Rush Hour game
 

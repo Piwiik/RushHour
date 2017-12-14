@@ -7,9 +7,10 @@
 """
 :mod:`board` module
 
-:author: Uro Pierrick, Ferdjani Luqman, Devaux Manon
+:author: `Uro Pierrick, Ferdjani Luqman, Devaux Manon`
 
 :date: 2017, october
+:last revision: 2017, december
 
 A module for board representations in a Rush Hour game
 
@@ -17,9 +18,30 @@ This module uses from :mod:`vehicle`
 
 class Vehicle
 
-This module provides :
+:Provides:
 
-class Board
+* class Board
+
+and methods
+
+* `add_vehicle`
+* `get_starting_cell`
+* `push_vehicle`
+* `clone_and_push`
+* `get_possible_moves`
+* `find_car`
+* `get_red_car`
+* `copy`
+* `__hash__`
+* `__eq__`
+* `__str__`
+* `get_path`
+
+and functions
+
+* `is_ended`
+* `get_new_boards`
+* `move`
 
 
 """
@@ -52,29 +74,36 @@ class IllegalMoveError(Exception):
 class Board():
     def add_vehicle(self, vehicle, position, count=None):
         """
+        adds a vehicle to the board self if possible, if not, will raise errors corresponding to the issue
+
         :param vehicle: the vehicle you want to place
         :type vehicle: Vehicle
-        :param position: the position of the vehicle in a 6*6 grid (from (0,0) to (5,5))
+        :param position: the position of the starting_cell (upmost and leftmost cell on which the vehicle lies) of the vehicle in a 6*6 grid (from (0,0) up and left to (5,5) down and right)
         :type position: tuple
         :param count:
         :UC: position is a couple of integers between 0 and 5
         """
         if count==None :
             count = vehicle.get_size()
+            if vehicle.get_orientation() :
+                if position[0]+count>6 :
+                    raise PositionError()
+                for i in range(count):
+                    if self.cells[(position[0]+i,position[1])]!=None :
+                        raise CollisionError()
+            else :
+                if position[1]+count>6 :
+                    raise PositionError()
+                for i in range(count):
+                    if self.cells[(position[0],position[1]+i)]!=None :
+                        raise CollisionError()
         if count != 0 :
             count-=1
-            try :
-                if self.cells[position]==None :
-                    self.cells[position]=vehicle
-                    if vehicle.get_orientation():
-                        self.add_vehicle(vehicle, (position[0]+1 , position[1]), count)
-                    else :
-                        self.add_vehicle(vehicle, (position[0] , position[1]+1), count)
-                else :
-                    print(vehicle.get_name(),"##", position)
-                    raise CollisionError()
-            except KeyError :
-                raise PositionError()
+            self.cells[position]=vehicle
+            if vehicle.get_orientation():
+                self.add_vehicle(vehicle, (position[0]+1 , position[1]), count)
+            else :
+                self.add_vehicle(vehicle, (position[0] , position[1]+1), count)
 
     def __init__(self,vehicles):
         """
@@ -191,6 +220,9 @@ class Board():
                     raise PositionError()
 
     def clone_and_push(self,position,direction):
+        """
+        returns a copy of self, where the vehicle at the coordinates position has been moved according to direction (True means right or down, False means up or left)
+        """
         clone = self.copy()
         clone.push_vehicle(position,direction)
         return clone
@@ -198,8 +230,6 @@ class Board():
     def get_possible_moves(self):
         """
         Computes the possible moves of a vehicle over one cell in the current board self
-        :param self: a board
-        :type self: Board
         :returns: a list of each move you can make in the form : (position,direction)
         where position (tuple) is a couple of integers which point to the starting cell of the vehicle
         and direction (bool) is the direction in which the vehicle can go, depending on its orientation
@@ -276,7 +306,7 @@ class Board():
 
     def copy(self):
         """
-        Copies self as a new board
+        returns a new board that is a copy of self
         """
         clone = Board(list())
         clone.cells = self.cells.copy()
@@ -339,7 +369,6 @@ def is_ended(boards,redcar) :
 
 def get_new_boards(active_boards,farmed_boards):
     """
-    Jeff Eclosion d'Or
     returns a set of every possible board after every possible move from the set active_boards that are not already in the set farmed_boards
     Side effect : updates farmed_boards with the newly found boards
     """
@@ -353,10 +382,9 @@ def get_new_boards(active_boards,farmed_boards):
                 farmed_boards.add(moved_board[0])
     return new_boards
 
-
 def move(board,moves):
     """
-    Returns tuple containing a copy of board (a Board object) where the move indicated by the last tuple of moves has been done, and a letter indicating which move has been done
+    Returns tuple containing a copy of board (a Board object) where the move indicated by the last tuple of moves (a list object) has been done, and a letter indicating which move has been done
     L : Left ; R : Right ; U : Up ; D : Down
     Side effect : removes the tuple used from moves
     If moves is empty, raises assertion error
