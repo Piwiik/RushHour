@@ -326,6 +326,7 @@ class Board():
             raise NoSolutionError("There is no solution to this problem")
         return final_PATH
 
+
 def is_ended(boards,redcar) :
     """
     Returns the final path used to get to the final board if the game is ended in one of the boards contained in the set boards, which means that the red car has reached the cell (2,5),
@@ -335,3 +336,19 @@ def is_ended(boards,redcar) :
         if board[0].cells[(2,5)] != None and board[0].cells[(2,5)].get_name()==redcar :
             return board[1]
     return None
+
+def get_new_boards(active_boards,farmed_boards):
+    """
+    Jeff Eclosion d'Or
+    returns a set of every possible board after every possible move from the set active_boards that are not already in the set farmed_boards
+    Side effect : updates farmed_boards with the newly found boards
+    """
+    new_boards = set()
+    for board in active_boards :
+        moves = board[0].get_possible_moves()
+        while moves!=list() :
+            moved_board = move(board[0],moves)
+            if not moved_board[0] in farmed_boards :
+                new_boards.add((moved_board[0],board[1]+moved_board[1]))
+                farmed_boards.add(moved_board[0])
+    return new_boards
