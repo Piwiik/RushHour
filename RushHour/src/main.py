@@ -24,6 +24,8 @@ class Board
 from board import *
 from pickle import *
 
+### BOARD CREATION ###
+
 def get_input_initialization():
     """
     Returns a list usable for board.Board.__init__
@@ -72,6 +74,56 @@ def get_input_initialization():
         print(board)
     return board
 
+### SOLVER FUNCTIONS ###
+
+def is_ended(boards,redcar) :
+    """
+    Returns the final path used to get to the final board if the game is ended in one of the boards contained in the set boards, which means that the red car has reached the cell (2,5),
+    otherwise returns None
+    """
+    for board in boards :
+        if board[0].cells[(2,5)] != None and board[0].cells[(2,5)].get_name()==redcar :
+            return board[1]
+    return None
+
+def get_new_boards(active_boards,farmed_boards):
+    """
+    Jeff Eclosion d'Or
+    returns a set of every possible board after every possible move from the set active_boards that are not already in the set farmed_boards
+    Side effect : updates farmed_boards with the newly found boards
+    """
+    new_boards = set()
+    for board in active_boards :
+        moves = board[0].get_possible_moves()
+        while moves!=list() :
+            moved_board = move(board[0],moves)
+            if not moved_board[0] in farmed_boards :
+                new_boards.add((moved_board[0],board[1]+moved_board[1]))
+                farmed_boards.add(moved_board[0])
+    return new_boards
+
+def move(board,moves):
+    """
+    Returns tuple containing a copy of board (a Board object) where the move indicated by the last tuple of moves has been done, and a letter indicating which move has been done
+    L : Left ; R : Right ; U : Up ; D : Down
+    Side effect : removes the tuple used from moves
+    If moves is empty, raises assertion error
+    """
+    assert len(moves)!=0
+    move = moves.pop()
+    vehicle = board.cells[move[0]]
+    if move[1] :
+        if vehicle.get_orientation() :
+            l = "D"
+        else :
+            l="R"
+    else :
+        if vehicle.get_orientation() :
+            l = "U"
+        else :
+            l="L"
+    return (board.clone_and_push(move[0],move[1]),l+vehicle.get_name()+"|")
+
 def find_solution(board):
     try :
         solution = board.get_path()
@@ -86,6 +138,8 @@ def find_solution(board):
     except NoSolutionError :
         print("There is no solution for this board.")
 
+### GAME FUNCTIONS ###        
+        
 def input_move(board,move,vehicle_name):
     """
     Takes a move and car input by the user, and moves the vehicle in the desired direction
@@ -275,6 +329,7 @@ def textual_game():
     if is_game_ended(board,redcar):
         print("Congratulations, you won !")
 
+### MAIN FUNCTION ###
 
 def main():
     j=input("""Welcome to the Rush Hour game interface you may choose between :
