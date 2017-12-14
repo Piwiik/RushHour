@@ -325,3 +325,13 @@ class Board():
         if len(active_boards)==0 :
             raise NoSolutionError("There is no solution to this problem")
         return final_PATH
+
+def is_ended(boards,redcar) :
+    """
+    Returns the final path used to get to the final board if the game is ended in one of the boards contained in the set boards, which means that the red car has reached the cell (2,5),
+    otherwise returns None
+    """
+    for board in boards :
+        if board[0].cells[(2,5)] != None and board[0].cells[(2,5)].get_name()==redcar :
+            return board[1]
+    return None
