@@ -14,12 +14,10 @@ print("copy took {} seconds for the test".format(timeit(stmt='board1.copy()',set
 
 """
 
-board1 = Board([(True,"A",(0,1)),(False,"B",(5,1)),(False,"X",(2,0)),(True,"O",(0,5)),(True,"C",(4,0))])
-print(board1)
-print("PATHAUXMAISPAVRAINONPLUS")
-ah = board1.Noirecommelechateauouflotteletendardnotredrapeau()
-for board in ah :
-    print(board,"\n")
+from boards import BOARDS
+
+print(BOARDS["ADVANCED8"])
+
 """
 print(board1)
 

@@ -109,27 +109,43 @@ def load_board():
     Allows for a board from a previous game to be loaded if the user wishes to if no save file exists
     the user may input it by themselves
     """
-    load = input("Would you like to load a file from your previous game ? (Y/N) ")
-    while load.upper() not in "YN":
-        load = input("Answer with Y for yes or N for no, you may answer in lowercase ")
-    if load.upper()=="Y":
+    load = input("Would you rather (L)oad a file from your previous game, (C)reate your very own board, or (S)elect a board from the library ? (L/C/S) ").upper()
+    while load not in "LCS":
+        print("Could not understand your input, please try again.")
+        load = input("Would you rather (L)oad a file from your previous game, (C)reate your very own board, or (S)elect a board from the library ? (L/C/S) ").upper()
+    if load=="L":
         try:
             ob_file = open("rushhour", "rb")
         except IOError:
             print("There is no save file, you may build your own game board")
-            board = get_input_initialization()
-            return board
+            return get_input_initialization()
         return pickle.load(ob_file)
-    else:
+    elif load=="C":
         print("You may build your very own board to play with ")
-        board = get_input_initialization()
-        return board
+        return get_input_initialization()
+    else :
+        from boards import BOARDS
+        difficulty = input("Please choose a difficulty : (B)eginner (I)ntermediate (A)dvanced (E)xpert  ").upper()
+        while difficulty not in "BIAE" :
+            print("Could not understand your input, please try again.")
+            difficulty = input("Please choose a difficulty : (B)eginner (I)ntermediate (A)dvanced (E)xpert  ").upper()
+        print("You may choose between those boards :")
+        d = ["BEGINNER","INTERMEDIATE","ADVANCED","EXPERT"]["BIAE".find(difficulty)]
+        for i in range(1,11) :
+            print("Board n°"+str(i))
+            print(BOARDS[d+str(i)])
+        choice = input("Which board will you choose ? (1 to 10)  ")
+        while int(choice) not in range(1,11) :
+            print("Could not understand your input, please try again.")
+            choice = input("Which board will you choose ? (1 to 10)  ")
+        return BOARDS[d+choice]
 
 def textual_game():
     """
     Function that allows for a game of Rushhour to be played
     """
     board = load_board()
+    print("You chose this board :")
     print(board)
     redcar = board.get_red_car()
     quit=None
@@ -140,13 +156,12 @@ def textual_game():
             vehicle_name = input("Choose one of the board's vehicles by name ")
         if vehicle_name.lower()=="exit":
             quit="exit"
-            save = input("Would you like to save your current progression ? (Y/N) ")
-            while save.upper() not in "YN":
+            save = input("Would you like to save your current progression ? (Y/N) ").upper()
+            while save not in "YN":
                 print("You may answer Y for yes or N for no, you may answer in lowercase if you wish")
-                save = input("Would you like to save your current progression ? (Y/N) ")
+                save = input("Would you like to save your current progression ? (Y/N) ").upper()
             if save.upper()=="Y":
                 save_game(board)
-            continue
         else:
             move = input("Choose in which direction you want the car to move (L,D,U,R) ")
             while not move.upper() in "LDUR":
@@ -157,13 +172,10 @@ def textual_game():
                 board = input_move(tmp,move.upper(),vehicle_name.upper())
             except CollisionError:
                 print("The move makes the vehicle collide with another one, choose another vehicle or/and move")
-                continue
             except PositionError:
                 print("The move puts a vehicle outside of the board's bounds, choose another vehicle or/and move")
-                continue
             except IllegalMoveError:
                 print("The move is impossible to do given the vehicle's orientation, choose another vehicle or/and move")
-                continue
         print(board)
     if is_game_ended(board,redcar):
         print("Congratulations, you won !")

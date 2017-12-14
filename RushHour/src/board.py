@@ -311,16 +311,16 @@ class Board():
             res += "\n"
         return res+"#0#1#2#3#4#5#"
 
-    def Noirecommelechateauouflotteletendardnotredrapeau(self):
+    def get_path(self):
         """
-        La force est noire
+        Returns a string containing the path taken to get to the fastest solution
         """
         redcar = self.get_red_car()
         active_boards = set([(self,"")])
         farmed_boards = set([self])
         final_PATH = is_ended(active_boards,redcar)
         while final_PATH==None and len(active_boards)!=0 :
-            active_boards = life_uh_finds_a_way(active_boards,farmed_boards)
+            active_boards = get_new_boards(active_boards,farmed_boards)
             final_PATH = is_ended(active_boards,redcar)
         if len(active_boards)==0 :
             raise NoSolutionError("There is no solution to this problem")
@@ -328,7 +328,7 @@ class Board():
 
 def is_ended(boards,redcar) :
     """
-    Returns the final board if the game is ended in one of the boards contained in the set boards, which means that the red car has reached the cell (2,5),
+    Returns the final path used to get to the final board if the game is ended in one of the boards contained in the set boards, which means that the red car has reached the cell (2,5),
     otherwise returns None
     """
     for board in boards :
@@ -336,7 +336,7 @@ def is_ended(boards,redcar) :
             return board[1]
     return None
 
-def life_uh_finds_a_way(active_boards,farmed_boards):
+def get_new_boards(active_boards,farmed_boards):
     """
     Jeff Eclosion d'Or
     returns a set of every possible board after every possible move from the set active_boards that are not already in the set farmed_boards

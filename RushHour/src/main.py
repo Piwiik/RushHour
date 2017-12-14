@@ -34,15 +34,15 @@ def get_input_initialization():
     print("Please Begin adding vehicles :")
     print(board)
     while going_on=="Y" :
-        JA = input("Name of the vehicle : (Possible names : {})\n".format(remaining_names))
+        JA = input("Name of the vehicle : (Possible names : {})\n".format(remaining_names)).upper()
         while len(JA)!=1 or not JA in remaining_names :
              print("Wrong name, please enter a new name.")
-             JA = input("Name of the vehicle : (Possible names : {})\n".format(remaining_names))
+             JA = input("Name of the vehicle : (Possible names : {})\n".format(remaining_names)).upper
         remaining_names = remaining_names.replace(JA,"")
-        OR = input("Orientation of the vehicle : (Possible orientations : (V)ertical or (H)orizontal\n")
+        OR = input("Orientation of the vehicle : (Possible orientations : (V)ertical or (H)orizontal\n").upper()
         while len(OR)!=1 or not OR in "VH" :
             print("Wrong orientation, please enter a new orientation.")
-            OR = input("Orientation of the vehicle : (Possible orientations : (V)ertical or (H)orizontal\n")
+            OR = input("Orientation of the vehicle : (Possible orientations : (V)ertical or (H)orizontal\n").upper()
         POS1 = input("Vertical position of the vehicle : (From 0 on top row to 5 on bottom row)\n")
         while len(POS1)!=1 or POS1 not in "012345" :
             print("Wrong coordinate, please enter a new coordinate.")
@@ -57,10 +57,10 @@ def get_input_initialization():
             print("Your vehicle could not be placed because it is placed on another vehicle")
         except PositionError :
             print("Your vehicle could not be placed because it is placed partially out of the board")
-        going_on = input("Would you like to add another vehicle ? (Y/N)")
+        going_on = input("Would you like to add another vehicle ? (Y/N)").upper()
         while len(going_on)!=1 or not going_on in "YN" :
             print("Wrong input, please try again.")
-            going_on = input("Would you like to add another vehicle ? (Y/N)")
+            going_on = input("Would you like to add another vehicle ? (Y/N)").upper()
         if going_on=="N" :
             try :
                 board.get_red_car()
@@ -73,16 +73,18 @@ def get_input_initialization():
     return board
 
 def find_solution(board):
-    solution = board.Noirecommelechateauouflotteletendardnotredrapeau()
-    moves = solution.split("|")[:-1]
-    print("Found a solution, press enter to view the next step")
-    ah = input()
-    for move in moves :
-        board.push_vehicle( board.find_car(move[1]) , move[0] in "RD")
-        print(board)
+    try :
+        solution = board.get_path()
+        moves = solution.split("|")[:-1]
+        print("Found a solution, press enter to view the next step")
         ah = input()
-    print("End of path.")
-
+        for move in moves :
+            board.push_vehicle( board.find_car(move[1]) , move[0] in "RD")
+            print(board)
+            ah = input()
+        print("End of path.")
+    except NoSolutionError :
+        print("There is no solution for this board.")
 
 def main():
     i=input("(T)extual or (G)raphical board solver? ")

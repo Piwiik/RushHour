@@ -81,7 +81,7 @@ def main():
 def board_display(board):
     """
     Graphical board display
-    """ 
+    """
     global gr_grid, fenetre
     for i in range(6):
         for j in range(6):
@@ -94,14 +94,14 @@ def board_display(board):
                 gr_grid[pos[0]][pos[1]].configure(text=value)
                 if pos!=board.cells[(i,j)]:
                     gr_grid[i][j].configure(text="")
-                           
+
     fenetre.update_idletasks()
-    
+
 def board_solver(board):
     """
     Solve the board
     """
-    solution=board.Noirecommelechateauouflotteletendardnotredrapeau()
+    solution=board.get_path()
     moves = solution.split("|")[:-1]
     l=[]
     for move in moves :
