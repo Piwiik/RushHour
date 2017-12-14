@@ -81,6 +81,10 @@ def main():
 def board_display(board):
     """
     Graphical board display
+
+    :param board: a Board to display
+    :type board: Board
+    :UC: None
     """
     global gr_grid, fenetre
     for i in range(6):
@@ -100,6 +104,13 @@ def board_display(board):
 def board_solver(board):
     """
     Solve the board
+
+    :param board: the Board to solve
+    :board type: Board
+    :returns: The solutions of the board
+    :rtype: list
+
+    :UC: None
     """
     solution=board.get_path()
     moves = solution.split("|")[:-1]
