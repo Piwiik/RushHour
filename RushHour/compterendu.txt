@@ -31,3 +31,7 @@ Semaines 2 et 3 : Explorations de pistes pour la résolution du problème, d'abo
         copy (à l'origine codée d'une autre manière, mais suite à des tests, celle-ci a été jugée plus rapide)
         clone_and_push
         résolution d'erreurs dans push_vehicle
+Semaine 4 :
+    Résolution de l'énigme
+    Représentation graphique
+    Capacité de créer son propre board, de le sauvegarder pour le charger plus tard, ou de le choisir parmis une bibliothèque pré-enregistrée
